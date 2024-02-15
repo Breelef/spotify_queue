@@ -4,6 +4,18 @@ import log from '../logger/logger.js'
 
 export const socketHandler = (io) => {
   io.on('connection', (socket) => {
+
+    const id = setInterval(function () {
+      socket.send(JSON.stringify(process.memoryUsage()), function () {
+      });
+    }, 100);
+
+
+    io.on('close', function () {
+      console.log('stopping client interval');
+      clearInterval(id);
+    });
+
     socket.on('buttonClick', (data) => {
       socket.emit('addToQueue', data)
     })
